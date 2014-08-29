@@ -9,4 +9,4 @@ in its current directory.
 2. AUTO BACKUP (Every 3 mins.) : [Backup] -> [Backup - START Auto]
 
 Screenshots:
-![Screenshot](https://github.com/joemakev/screen-brackets-backup.jpg)
+![Screenshot](https://github.com/joemakev/brackets-backup/blob/master/screen-brackets-backup.jpg)

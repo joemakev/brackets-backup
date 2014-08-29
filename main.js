@@ -17,21 +17,15 @@ define(function (require, exports, module) {
     /* --- Main Functions ---  */
     function createFileBackup() {
         console.log('createFileBackup()');
-        ////window.alert("createFileBackup()");
         
         //Clear auto backup job
         if(isAutoBackup) clearInterval(backupInterval);
         
         //Get the current document
         var currDoc = DocumentManager.getCurrentDocument();
-        //var currOpenDocsArr = DocumentManager.getAllOpenDocuments(); //<-- Works
         //console.log(currDoc);
         var currDocTxt = currDoc.getText();
-        //var currDocFullPath = FileUtils.getDirectoryPath(currDoc.file.fullPath);
-        //var currDocName = FileUtils.getBaseName(currDoc.file.fullPath);
-        //console.log(currDocDir);
-        //console.log(currDocName+'.bak');
-        
+
         //Set path and file variables
         var currDocFile = currDoc.file;
         var currDocOrigPath = currDoc.file._path;
@@ -41,11 +35,9 @@ define(function (require, exports, module) {
         currDoc.file._path = currDocBakPath;
         
         //Create/write the backup file
-        ////console.log(currDoc.file._path);
         var options = {};
         options.blind = true;
         currDocFile.write(currDocTxt, options);
-        ////console.log(currDocTxt);
     
         //Change doc path to orig
         currDoc.file._path = currDocOrigPath;
@@ -82,6 +74,7 @@ define(function (require, exports, module) {
         console.log('dummyFunction()');
     }
     
+    
     /* --- Register Commands --- */
     var CREATE_FILE_BACKUP = "bracketsBackup.createFileBackup";
     CommandManager.register("Backup - CREATE", CREATE_FILE_BACKUP, createFileBackup);
@@ -92,21 +85,11 @@ define(function (require, exports, module) {
     var STOP_AUTO_BACKUP = "bracketsBackup.stopAutoBackup";
     CommandManager.register("Backup - STOP Auto", STOP_AUTO_BACKUP, stopAutoBackup);
     
-    //var DUMMY_FUNCTION = "bracketsBackup.dummyFunction";
-    //CommandManager.register("Backup - Dummy Function", DUMMY_FUNCTION, dummyFunction);
     
     /* --- Create Menu Item --- */
-    //var menu = Menus.getMenu(Menus.AppMenuBar.FILE_MENU);
-    //menu.addMenuDivider();
     var menu = Menus.addMenu("Backup", 'Backup', Menus.AFTER, Menus.AppMenuBar.FILE_MENU);
-    //menu.addMenuItem(DUMMY_FUNCTION);
     menu.addMenuItem(CREATE_FILE_BACKUP);
     menu.addMenuItem(START_AUTO_BACKUP);
     
-    
-    
-    //We could also add a key binding at the same time:
-    //menu.addMenuItem(MY_COMMAND_ID, "Ctrl-Alt-H");
-    //(Note: "Ctrl" is automatically mapped to "Cmd" on Mac)
     
 });

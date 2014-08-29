@@ -1,10 +1,12 @@
-# Brackets Backup
+# BRACKETS BACKUP
 
-This extension will create a backup copy (.bak) of the active file in its current directory.
+This extension will create a backup copy (.bak) of the active file 
+in its current directory.
 
-* You can trigger the file backup by going to the menu bar and clicking the following:
+* You can trigger the file backup by going to 
+  the menu bar and clicking the following:
 1. MANUAL BACKUP : [Backup] -> [Backup - CREATE]
 2. AUTO BACKUP (Every 3 mins.) : [Backup] -> [Backup - START Auto]
 
 Screenshots:
-![Screenshot](https://github.com/joemakev/....)
+![Screenshot](https://github.com/joemakev/screen-brackets-backup.jpg)

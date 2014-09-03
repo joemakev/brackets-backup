@@ -25,7 +25,7 @@ define(function (require, exports, module) {
         var currDoc = DocumentManager.getCurrentDocument();
         
         //console.log(currDoc);
-        if(typeof currDoc != 'undefined') {
+        if(typeof currDoc != 'undefined' && currDoc != null) {
             var currDocTxt = currDoc.getText(); 
 
             //Set path and file variables

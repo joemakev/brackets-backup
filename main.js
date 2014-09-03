@@ -23,28 +23,30 @@ define(function (require, exports, module) {
         
         //Get the current document
         var currDoc = DocumentManager.getCurrentDocument();
+        
         //console.log(currDoc);
-        var currDocTxt = currDoc.getText();
+        if(typeof currDoc != 'undefined') {
+            var currDocTxt = currDoc.getText(); 
 
-        //Set path and file variables
-        var currDocFile = currDoc.file;
-        var currDocOrigPath = currDoc.file._path;
-        var currDocBakPath = currDocOrigPath+'.bak';
-        
-        //Change doc path to bak
-        currDoc.file._path = currDocBakPath;
-        
-        //Create/write the backup file
-        var options = {};
-        options.blind = true;
-        currDocFile.write(currDocTxt, options);
-    
-        //Change doc path to orig
-        currDoc.file._path = currDocOrigPath;
+            //Set path and file variables
+            var currDocFile = currDoc.file;
+            var currDocOrigPath = currDoc.file._path;
+            var currDocBakPath = currDocOrigPath+'.bak';
+
+            //Change doc path to bak
+            currDoc.file._path = currDocBakPath;
+
+            //Create/write the backup file
+            var options = {};
+            options.blind = true;
+            currDocFile.write(currDocTxt, options);
+
+            //Change doc path to orig
+            currDoc.file._path = currDocOrigPath;
+        }
         
         //Restart the auto backup, if enabled
         if(isAutoBackup) startAutoBackup();
-        
         
     } //end of createFileBackup()
     

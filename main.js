@@ -28,7 +28,12 @@ define(function (require, exports, module) {
         if(typeof currDoc != 'undefined' && currDoc != null) {
             var currDocTxt = currDoc.getText(); 
 
-            //Set path and file variables
+            //Blind Save the orig file first
+            var options = {};
+            options.blind = true;
+            currDocFile.write(currDocTxt, options);
+
+            //Change path and set file variables
             var currDocFile = currDoc.file;
             var currDocOrigPath = currDoc.file._path;
             var currDocBakPath = currDocOrigPath+'.bak';
@@ -37,8 +42,6 @@ define(function (require, exports, module) {
             currDoc.file._path = currDocBakPath;
 
             //Create/write the backup file
-            var options = {};
-            options.blind = true;
             currDocFile.write(currDocTxt, options);
 
             //Change doc path to orig
@@ -75,8 +78,7 @@ define(function (require, exports, module) {
     function dummyFunction() {
         console.log('dummyFunction()');
     }
-    
-    
+
     /* --- Register Commands --- */
     var CREATE_FILE_BACKUP = "bracketsBackup.createFileBackup";
     CommandManager.register("Backup - CREATE", CREATE_FILE_BACKUP, createFileBackup);

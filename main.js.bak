@@ -6,33 +6,23 @@ define(function (require, exports, module) {
         Menus           = brackets.getModule("command/Menus"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
         Dialogs         = brackets.getModule("widgets/Dialogs"),
-        AppInit         = brackets.getModule("utils/AppInit"),
-        ExtensionUtils  = brackets.getModule("utils/ExtensionUtils"),
-        Preferences     = require("preferences");
-
+        AppInit         = brackets.getModule("utils/AppInit");
+    
         /*
         File            = brackets.getModule("filesystem/File"),
         FileSystem      = brackets.getModule("filesystem/FileSystem"),
         FileUtils       = brackets.getModule("file/FileUtils");
         */
     
-
+        
     /* === MAIN VARIABLES === */
-    var menu,
-        CREATE_FILE_BACKUP,
-        START_AUTO_BACKUP,
-        STOP_AUTO_BACKUP,
-        SET_AUTO_BACKUP_TIME,
-        backupInterval = 'undefined',
+    var backupInterval = 'undefined',
         msInMins = 60000,
         timeInMins = 3,
         backupTime = 180000,
-        suppliedTime = 3,
-        timeInputElem,
-        prefObj,
         isAutoBackup = false;
 
-
+    
     /* === MAIN FUNCTIONS ===  */
     function createFileBackup() {
         console.log('createFileBackup()');
@@ -72,12 +62,15 @@ define(function (require, exports, module) {
         
     } //end of createFileBackup()
     
-
+    function updateAutoBackupTime() {
+        console.log('updateAutoBackupTime()');
+        backupTime = parseInt(timeInMins) * msInMins /*300000 MS = 5 mins., 180000 MS = 3mins.*/;
+    }
+    
     function startAutoBackup() {
         console.log('startAutoBackup()');
         if(!isAutoBackup) {
             menu.removeMenuItem(START_AUTO_BACKUP);
-            menu.removeMenuItem(SET_AUTO_BACKUP_TIME);
             menu.addMenuItem(STOP_AUTO_BACKUP);
             isAutoBackup = true;
         }
@@ -90,92 +83,69 @@ define(function (require, exports, module) {
     
     function stopAutoBackup() {
         menu.addMenuItem(START_AUTO_BACKUP);
-        menu.addMenuItem(SET_AUTO_BACKUP_TIME);
         menu.removeMenuItem(STOP_AUTO_BACKUP);
         isAutoBackup = false
         console.log('stopAutoBackup()');
         clearInterval(backupInterval);
     }
     
-    function dummyFunction() {
-        console.log('dummyFunction()');
-    }
-
-    
-    function updateAutoBackupTime() {
-        console.log('updateAutoBackupTime()');
-        backupTime = parseInt(timeInMins) * msInMins /*300000 MS = 5 mins., 180000 MS = 3mins.*/;
-    }
-
-    
     function setAutoBackupTime() {
         console.log('setAutoBackupTime()');
         var btnArr = [
             { className: 'DIALOG_BTN_CLASS_PRIMARY', id: 'DIALOG_BTN_OK', text: 'OK' },
         ]
-
-        var dialog = Dialogs.showModalDialog(
-            "backupTimerSettings",
+        
+        Dialogs.showModalDialog(
+            "backupTimerSettings", 
             "Backup - Set Auto Backup Time",
-
-            '<label class="label-time">Time in minutes (minimum is 1): </label>'+
+            
+            '<label>Time in minutes (minimum is 1): </label>'+
             '<input type="text" name="min-time" id="min-time" value="'+ timeInMins +'"/>',
     
             btnArr
         );
-        timeInputElem = document.querySelector("#min-time");
-
-        //dialog.done() example was seen in brackets-snippets
-        dialog.done(function (buttonId) {
-            if(buttonId === "DIALOG_BTN_OK") {
-                suppliedTime = parseInt(timeInputElem.value);
-                if(suppliedTime >= 1) timeInMins = suppliedTime;
-                else timeInMins = 1;
-                Preferences.set('autoBackupTime', timeInMins)
-                updateAutoBackupTime();
-            }
-        });
-
+        
+        /* --- To be placed in callback ---
+        var suppliedTime = parseInt(document.querySelector("#min-time").value);
+        if(suppliedTime >= 1) timeInMins = suppliedTime;
+        else timeInMins = 1;
+        console.log("timeInMins: "+timeInMins);
+        */
+    }
+    
+    function dummyFunction() {
+        console.log('dummyFunction()');
     }
 
 
     /* === APP INIT === */
     AppInit.appReady(function () {
+        
         /* === REGISTER COMMANDS === */
-        CREATE_FILE_BACKUP = "bracketsBackup.createFileBackup";
+        var CREATE_FILE_BACKUP = "bracketsBackup.createFileBackup";
         CommandManager.register("Backup - CREATE", CREATE_FILE_BACKUP, createFileBackup);
 
-        START_AUTO_BACKUP = "bracketsBackup.startAutoFileBackup";
+        var START_AUTO_BACKUP = "bracketsBackup.startAutoFileBackup";
         CommandManager.register("Backup - START Auto", START_AUTO_BACKUP, startAutoBackup);
 
-        STOP_AUTO_BACKUP = "bracketsBackup.stopAutoBackup";
+        var STOP_AUTO_BACKUP = "bracketsBackup.stopAutoBackup";
         CommandManager.register("Backup - STOP Auto", STOP_AUTO_BACKUP, stopAutoBackup);
 
-        SET_AUTO_BACKUP_TIME = "bracketsBackup.dummyFunction";
+        var SET_AUTO_BACKUP_TIME = "bracketsBackup.dummyFunction";
         CommandManager.register("Backup - SET Auto Backup TIME", SET_AUTO_BACKUP_TIME, setAutoBackupTime);
 
         //var DUMMY_FUNCTION = "bracketsBackup.dummyFunction";
         //CommandManager.register("Backup - Dummy Function", DUMMY_FUNCTION, dummyFunction);
 
+        //Update the auto backup time
+        updateAutoBackupTime();
+        
 
         /* === CREATE MENU ITEM === */
-        menu = Menus.addMenu("Backup", 'Backup', Menus.AFTER, Menus.AppMenuBar.FILE_MENU);
+        var menu = Menus.addMenu("Backup", 'Backup', Menus.AFTER, Menus.AppMenuBar.FILE_MENU);
         menu.addMenuItem(CREATE_FILE_BACKUP);
         menu.addMenuItem(START_AUTO_BACKUP);
         menu.addMenuItem(SET_AUTO_BACKUP_TIME);
-
-
-        //Load the CSS
-        ExtensionUtils.loadStyleSheet(module, "main.css");
-
-        //Get the existing preferences
-        prefObj = Preferences.getAll();
-        timeInMins = prefObj.autoBackupTime;
-
-
-        //Update the auto backup time
-        updateAutoBackupTime();
-
     });
     
     

@@ -1,7 +1,7 @@
 {
     "name": "brackets-backup",
     "title": "Brackets Backup",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "File Backup Extension for Brackets. This extension will create a backup copy (.bak) of the active file in its current directory.",
     "homepage": "https://github.com/joemakev/brackets-backup",
     "author": "Joselito Evangelista",
